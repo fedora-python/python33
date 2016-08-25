@@ -125,8 +125,8 @@
 # ==================
 Summary: Version 3 of the Python programming language aka Python 3000
 Name: python3
-Version: %{pybasever}.2
-Release: 19%{?dist}
+Version: %{pybasever}.6
+Release: 1%{?dist}
 License: Python
 Group: Development/Languages
 
@@ -396,7 +396,8 @@ Patch143: 00143-tsc-on-ppc.patch
 # - don't build the _md5 and _sha* modules; rely on the _hashlib implementation
 #   of hashlib
 # (rhbz#563986)
-Patch146: 00146-hashlib-fips.patch
+# I don't like this patch :) (no FIPS support for python33)
+#  Patch146: 00146-hashlib-fips.patch
 
 # 00147 #
 # Add a sys._debugmallocstats() function
@@ -566,7 +567,8 @@ Patch173: 00173-workaround-ENOPROTOOPT-in-bind_port.patch
 # http://bugs.python.org/issue17429
 # (rhbz#922149)
 # Does not affect python2 (python2 uses a byte string so it doesn't need to decode)
-Patch177: 00177-platform-unicode.patch
+# Upstream as Python 3.3.6
+#  Patch177: 00177-platform-unicode.patch
 
 # 00178 #
 # Don't duplicate various FLAGS in sysconfig values
@@ -601,7 +603,8 @@ Patch180: 00180-python-add-support-for-ppc64p7.patch
 # Upstream fix for CVE-2013-2099 (ssl.match_hostname DOS)
 # http://bugs.python.org/issue17980
 # http://hg.python.org/cpython/rev/c627638753e2
-Patch183: 00183-cve-2013-2099-fix-ssl-match_hostname-dos.patch
+# Upstream as of 3.3.6
+#  Patch183: 00183-cve-2013-2099-fix-ssl-match_hostname-dos.patch
 
 # 00184 #
 # Fix for https://bugzilla.redhat.com/show_bug.cgi?id=979696
@@ -616,7 +619,8 @@ Patch184: 00184-ctypes-should-build-with-libffi-multilib-wrapper.patch
 # SSL module fails to handle NULL bytes inside subjectAltNames general names
 # http://bugs.python.org/issue18709
 # rhbz#996399
-Patch185: 00185-CVE-2013-4238-hostname-check-bypass-in-SSL-module.patch
+# Upstream as of 3.3.6
+#  Patch185: 00185-CVE-2013-4238-hostname-check-bypass-in-SSL-module.patch
 
 # 00186 #
 # Fix for https://bugzilla.redhat.com/show_bug.cgi?id=1023607
@@ -630,27 +634,31 @@ Patch186: 00186-dont-raise-from-py_compile.patch
 # Fix for rhbz#1023742
 # Change behavior of ssl.match_hostname() to follow RFC 6125
 # See http://bugs.python.org/issue17997#msg194950 for more.
-Patch187: 00187-change-match_hostname-to-follow-RFC-6125.patch
+# Upstream as of 3.3.6
+#  Patch187: 00187-change-match_hostname-to-follow-RFC-6125.patch
 
 # 00190 #
 #
 # Fix tests with SQLite >= 3.8.4
 # http://bugs.python.org/issue20901
 # http://hg.python.org/cpython/rev/4d626a9df062
-Patch190: 00190-fix-tests-with-sqlite-3.8.4.patch
+# Upstream  as of 3.3.6
+#  Patch190: 00190-fix-tests-with-sqlite-3.8.4.patch
 
 # 00192 #
 #
 # Fixing buffer overflow (upstream patch)
 # rhbz#1062375
-Patch192: 00192-buffer-overflow.patch
+# Upstream as Python 3.3.6
+#  Patch192: 00192-buffer-overflow.patch
 
 # 00193
 #
 # Skip correct number of *.pyc file bytes in ModuleFinder.load_module
 # rhbz#1060338
 # http://bugs.python.org/issue20778
-Patch193: 00193-skip-correct-num-of-pycfile-bytes-in-modulefinder.patch
+# Upstream as Python 3.3.6
+#  Patch193: 00193-skip-correct-num-of-pycfile-bytes-in-modulefinder.patch
 
 # 00194
 #
@@ -664,20 +672,43 @@ Patch194: 00194-json-add-boundary-check.patch
 # path separators in URLs. This may have enabled attackers to disclose a CGI
 # script's source code or execute arbitrary scripts in the server's
 # document root.
-Patch197: 00197-fix-CVE-2014-4650.patch
+# Upstream as Python 3.3.6
+#  Patch197: 00197-fix-CVE-2014-4650.patch
 
 # 00198
 #
 # Fix CVE-2013-7338: malformed ZIP files could cause 100% CPU usage
 # https://hg.python.org/cpython/rev/79ea4ce431b1
-Patch198: 00198-fix-CVE-2013-7338.patch
+# Upstream as Python 3.3.6
+#  Patch198: 00198-fix-CVE-2013-7338.patch
 
 # 00199
 #
 # Fix CVE-2014-2667: os.makedirs(exist_ok=True) is not thread-safe in Python 3.x
 # https://hg.python.org/cpython/rev/c24dd53ab4b9
-Patch199: 00199-fix-CVE-2014-2667.patch
+# Upstream as Python 3.3.6
+#  Patch199: 00199-fix-CVE-2014-2667.patch
 
+# 00204
+#
+# openssl requires DH keys to be > 768bits
+Patch204: 00204-increase-dh-keys-size.patch
+
+# 00212 #
+# Fix test breakage with version 2.2.0 of Expat
+# rhbz#1353918: https://bugzilla.redhat.com/show_bug.cgi?id=1353918
+# NOT YET FIXED UPSTREAM: http://bugs.python.org/issue27369
+Patch212: 00212-fix-test-pyexpat-failure.patch
+
+# 00244 #
+# Skip some SSL related tests, SSL is just broken in 3.3
+# python33 will not try to fix that
+Patch244: 00244-skip-ssl-tests.patch
+
+# 00245 #
+# Skip stack overflow test that hangs in rpmbuild
+# python33 will not try to fix that
+Patch245: 00245-skip-stack-overflow-test.patch
 
 # (New patches go here ^^^)
 #
@@ -895,7 +926,7 @@ done
 %patch143 -p1 -b .tsc-on-ppc
 # 00144: not for python3
 # 00145: not for python3
-%patch146 -p1
+# 00146: not for python33
 # 00147: upstream as of Python 3.3.0
 # 00148: upstream as of Python 3.2.3
 # 00149: upstream as of Python 3.2.3
@@ -930,24 +961,32 @@ done
 #00174: TODO
 # 00175: upstream as of Python 3.3.2
 # 00176: upstream as of Python 3.3.1
-%patch177 -p1
+#00177: upstream as of Python 3.3.6
 %patch178 -p1
 %patch179 -p1
 %patch180 -p1
 # 00181: not for python3
 # 00182: upstream as of Python 3.3.2
-%patch183 -p1
+# 00183: upstream as of Python 3.3.6
 %patch184 -p1
-%patch185 -p1
+# 00185: upstream as of Python 3.3.6
 %patch186 -p1
-%patch187 -p1
-%patch190 -p1
-%patch192 -p1
-%patch193 -p1
+# 00187: upstream as of Python 3.3.6
+# 00190: upstream as of Python 3.3.6
+# 00192: upstream as of Python 3.3.6
+# 00193: upstream as of Python 3.3.6
 %patch194 -p1
-%patch197 -p1
-%patch198 -p1
-%patch199 -p1
+# 00197: upstream as of Python 3.3.6
+# 00198: upstream as of Python 3.3.6
+# 00199: upstream as of Python 3.3.6
+%patch204 -p1
+%patch212 -p1
+%patch244 -p1
+
+%ifnarch %{ix86}
+# apply the patch for not ix86 arches, as it fails on _64 and arm
+%patch245 -p1
+%endif
 
 # Currently (2010-01-15), http://docs.python.org/library is for 2.6, and there
 # are many differences between 2.6 and the Python 3 library.
@@ -1582,9 +1621,8 @@ rm -fr %{buildroot}
 %dir %{pylibdir}/test/
 %dir %{pylibdir}/test/__pycache__/
 %{pylibdir}/test/__init__.py
-%{pylibdir}/test/support.py
+%{pylibdir}/test/support/
 %{pylibdir}/test/__pycache__/__init__%{bytecode_suffixes}
-%{pylibdir}/test/__pycache__/support%{bytecode_suffixes}
 
 %exclude %{pylibdir}/turtle.py
 %exclude %{pylibdir}/__pycache__/turtle*%{bytecode_suffixes}
@@ -1803,6 +1841,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Aug 25 2016 Miro Hrončok <mhroncok@redhat.com> - 3.3.6-1
+- Rebase to 3.3.6
+
 * Thu Dec 04 2014 Slavek Kabrda <bkabrda@redhat.com> - 3.3.2-19
 - Fix CVE-2013-7338 and CVE-2014-2667.
 Resolves: rhbz#1078015

@@ -20,6 +20,7 @@ not_compiled = [
     'lib2to3/tests/data/bom.py',
     'lib2to3/tests/data/crlf.py',
     'lib2to3/tests/data/different_encoding.py',
+    'lib2to3/tests/data/false_encoding.py',
     'lib2to3/tests/data/py2_test_grammar.py',
     '.debug-gdb.py',
 ]

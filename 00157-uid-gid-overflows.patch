@@ -1,56 +1,68 @@
-diff -up Python-3.3.0b1/Lib/test/test_os.py.uid-gid-overflows Python-3.3.0b1/Lib/test/test_os.py
---- Python-3.3.0b1/Lib/test/test_os.py.uid-gid-overflows	2012-06-26 16:19:48.000000000 -0400
-+++ Python-3.3.0b1/Lib/test/test_os.py	2012-07-20 14:21:46.856688739 -0400
-@@ -1174,30 +1174,36 @@ if sys.platform != 'win32':
-             def test_setuid(self):
-                 if os.getuid() != 0:
-                     self.assertRaises(os.error, os.setuid, 0)
-+                self.assertRaises(TypeError, os.setuid, 'not an int')
-                 self.assertRaises(OverflowError, os.setuid, 1<<32)
+From 0436437c5cebda586a99f092428f6d6de687765b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Miro=20Hron=C4=8Dok?= <miro@hroncok.cz>
+Date: Thu, 25 Aug 2016 14:42:19 +0200
+Subject: [PATCH] UID GID overflows
+
+---
+ Lib/test/test_os.py  | 8 ++++++++
+ Lib/test/test_pwd.py | 4 ++--
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/Lib/test/test_os.py b/Lib/test/test_os.py
+index 56309bf..b7cea2b 100644
+--- a/Lib/test/test_os.py
++++ b/Lib/test/test_os.py
+@@ -1287,30 +1287,36 @@ class PosixUidGidTests(unittest.TestCase):
+     def test_setuid(self):
+         if os.getuid() != 0:
+             self.assertRaises(os.error, os.setuid, 0)
++        self.assertRaises(TypeError, os.setuid, 'not an int')
+         self.assertRaises(OverflowError, os.setuid, 1<<32)
  
-         if hasattr(os, 'setgid'):
-             def test_setgid(self):
-                 if os.getuid() != 0 and not HAVE_WHEEL_GROUP:
-                     self.assertRaises(os.error, os.setgid, 0)
-+                self.assertRaises(TypeError, os.setgid, 'not an int')
-                 self.assertRaises(OverflowError, os.setgid, 1<<32)
+     @unittest.skipUnless(hasattr(os, 'setgid'), 'test needs os.setgid()')
+     def test_setgid(self):
+         if os.getuid() != 0 and not HAVE_WHEEL_GROUP:
+             self.assertRaises(os.error, os.setgid, 0)
++        self.assertRaises(TypeError, os.setgid, 'not an int')
+         self.assertRaises(OverflowError, os.setgid, 1<<32)
  
-         if hasattr(os, 'seteuid'):
-             def test_seteuid(self):
-                 if os.getuid() != 0:
-                     self.assertRaises(os.error, os.seteuid, 0)
-+                self.assertRaises(TypeError, os.seteuid, 'not an int')
-                 self.assertRaises(OverflowError, os.seteuid, 1<<32)
+     @unittest.skipUnless(hasattr(os, 'seteuid'), 'test needs os.seteuid()')
+     def test_seteuid(self):
+         if os.getuid() != 0:
+             self.assertRaises(os.error, os.seteuid, 0)
++        self.assertRaises(TypeError, os.seteuid, 'not an int')
+         self.assertRaises(OverflowError, os.seteuid, 1<<32)
  
-         if hasattr(os, 'setegid'):
-             def test_setegid(self):
-                 if os.getuid() != 0 and not HAVE_WHEEL_GROUP:
-                     self.assertRaises(os.error, os.setegid, 0)
-+                self.assertRaises(TypeError, os.setegid, 'not an int')
-                 self.assertRaises(OverflowError, os.setegid, 1<<32)
+     @unittest.skipUnless(hasattr(os, 'setegid'), 'test needs os.setegid()')
+     def test_setegid(self):
+         if os.getuid() != 0 and not HAVE_WHEEL_GROUP:
+             self.assertRaises(os.error, os.setegid, 0)
++        self.assertRaises(TypeError, os.setegid, 'not an int')
+         self.assertRaises(OverflowError, os.setegid, 1<<32)
  
-         if hasattr(os, 'setreuid'):
-             def test_setreuid(self):
-                 if os.getuid() != 0:
-                     self.assertRaises(os.error, os.setreuid, 0, 0)
-+                self.assertRaises(TypeError, os.setreuid, 'not an int', 0)
-+                self.assertRaises(TypeError, os.setreuid, 0, 'not an int')
-                 self.assertRaises(OverflowError, os.setreuid, 1<<32, 0)
-                 self.assertRaises(OverflowError, os.setreuid, 0, 1<<32)
+     @unittest.skipUnless(hasattr(os, 'setreuid'), 'test needs os.setreuid()')
+     def test_setreuid(self):
+         if os.getuid() != 0:
+             self.assertRaises(os.error, os.setreuid, 0, 0)
++        self.assertRaises(TypeError, os.setreuid, 'not an int', 0)
++        self.assertRaises(TypeError, os.setreuid, 0, 'not an int')
+         self.assertRaises(OverflowError, os.setreuid, 1<<32, 0)
+         self.assertRaises(OverflowError, os.setreuid, 0, 1<<32)
  
-@@ -1212,6 +1218,8 @@ if sys.platform != 'win32':
-             def test_setregid(self):
-                 if os.getuid() != 0 and not HAVE_WHEEL_GROUP:
-                     self.assertRaises(os.error, os.setregid, 0, 0)
-+                self.assertRaises(TypeError, os.setregid, 'not an int', 0)
-+                self.assertRaises(TypeError, os.setregid, 0, 'not an int')
-                 self.assertRaises(OverflowError, os.setregid, 1<<32, 0)
-                 self.assertRaises(OverflowError, os.setregid, 0, 1<<32)
+@@ -1318,6 +1324,8 @@ class PosixUidGidTests(unittest.TestCase):
+     def test_setregid(self):
+         if os.getuid() != 0 and not HAVE_WHEEL_GROUP:
+             self.assertRaises(os.error, os.setregid, 0, 0)
++        self.assertRaises(TypeError, os.setregid, 'not an int', 0)
++        self.assertRaises(TypeError, os.setregid, 0, 'not an int')
+         self.assertRaises(OverflowError, os.setregid, 1<<32, 0)
+         self.assertRaises(OverflowError, os.setregid, 0, 1<<32)
  
-diff -up Python-3.3.0b1/Lib/test/test_pwd.py.uid-gid-overflows Python-3.3.0b1/Lib/test/test_pwd.py
---- Python-3.3.0b1/Lib/test/test_pwd.py.uid-gid-overflows	2012-06-26 16:19:48.000000000 -0400
-+++ Python-3.3.0b1/Lib/test/test_pwd.py	2012-07-20 14:21:46.857688726 -0400
-@@ -87,9 +87,9 @@ class PwdTest(unittest.TestCase):
+diff --git a/Lib/test/test_pwd.py b/Lib/test/test_pwd.py
+index 37a1bcb..0f61100 100644
+--- a/Lib/test/test_pwd.py
++++ b/Lib/test/test_pwd.py
+@@ -94,9 +94,9 @@ class PwdTest(unittest.TestCase):
          # In some cases, byuids isn't a complete list of all users in the
          # system, so if we try to pick a value not in byuids (via a perturbing
          # loop, say), pwd.getpwuid() might still be able to find data for that
@@ -62,3 +74,6 @@ diff -up Python-3.3.0b1/Lib/test/test_pwd.py.uid-gid-overflows Python-3.3.0b1/Li
          self.assertNotIn(fakeuid, byuids)
          self.assertRaises(KeyError, pwd.getpwuid, fakeuid)
  
+-- 
+2.9.0
+

@@ -1,0 +1,12 @@
+diff --git a/Lib/test/test_faulthandler.py b/Lib/test/test_faulthandler.py
+index 770e70c..96d3c6c 100644
+--- a/Lib/test/test_faulthandler.py
++++ b/Lib/test/test_faulthandler.py
+@@ -183,6 +183,7 @@ faulthandler._fatal_error(b'xyz')
+                      "OpenBSD if Python is compiled with pthread")
+     @unittest.skipIf(not hasattr(faulthandler, '_stack_overflow'),
+                      'need faulthandler._stack_overflow()')
++    @unittest._skipInRpmBuild("Hangs forever in rpmbuild on 64 bits")
+     def test_stack_overflow(self):
+         self.check_fatal_error("""
+ import faulthandler

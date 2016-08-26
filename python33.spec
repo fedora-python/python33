@@ -190,12 +190,6 @@ Requires: expat >= 2.1.0
 
 Source: http://www.python.org/ftp/python/%{version}/Python-%{version}.tar.xz
 
-# Avoid having various bogus auto-generated Provides lines for the various
-# python c modules' SONAMEs:
-Source1: find-provides-without-python-sonames.sh
-%global _use_internal_dependency_generator 0
-%global __find_provides %{SOURCE1}
-
 # Supply various useful macros for building python 3 modules:
 #  __python3, python3_sitelib, python3_sitearch
 Source2: macros.python3
@@ -744,9 +738,11 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 URL: http://www.python.org/
 
-# We'll not provide this, on purpose
+# We don't want to provide this
 # No package in Fedora shall ever depend on this
-# Provides: python(abi) = %{pybasever}
+%global __requires_exclude ^python\\(abi\\) = 3\\..$
+%global __provides_exclude ^python\\(abi\\) = 3\\..$
+
 
 %description
 Python %{pybasever} package for developers.
@@ -759,7 +755,6 @@ SSL might be broken in this version.
 
 %prep
 %setup -q -n Python-%{version}
-chmod +x %{SOURCE1}
 
 %if 0%{?with_systemtap}
 # Provide an example of usage of the tapset:

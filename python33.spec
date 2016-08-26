@@ -50,7 +50,7 @@
 %global py_INSTSONAME_optimized libpython%{LDVERSION_optimized}.so.%{py_SOVERSION}
 %global py_INSTSONAME_debug     libpython%{LDVERSION_debug}.so.%{py_SOVERSION}
 
-%global with_debug_build 1
+%global with_debug_build 0
 
 %global with_gdb_hooks 1
 
